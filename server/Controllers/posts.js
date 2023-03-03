@@ -23,7 +23,7 @@ module.exports = {
   },
   getCurrentUserPosts: async (req, res) => {
     try {
-      const posts = await Posts.findAll({
+      const posts = await Post.findAll({
         where: { privateStatus: false },
         include: [
           {
@@ -53,8 +53,32 @@ module.exports = {
       res.sendStaus(400);
     }
   },
-  editPost: (req, res) => {},
-  deletePost: (req, res) => {
-    console.log(`delete post`);
+  editPost: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      await Post.update(
+        { privateStatus: status },
+        {
+          where: { id: +id },
+        }
+      );
+      res.sendStatus(200);
+    } catch (error) {
+      console.log("ERROR IN getCurrentUserPosts");
+      console.log(error);
+      res.sendStatus(400);
+    }
+  },
+  deletePost: async (req, res) => {
+    try {
+      const { id } = req.params;
+      await Post.destroy({ where: { id: +id } });
+      res.sendStatus(200);
+    } catch (error) {
+      console.log("ERROR IN getCurrentUserPosts");
+      console.log(error);
+      res.sendStatus(400);
+    }
   },
 };
